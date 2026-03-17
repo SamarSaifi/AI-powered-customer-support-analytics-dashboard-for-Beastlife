@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Beastlife Dashboard</title>
+</head>
+<body>
+  <h1>Customer Support AI</h1>
+
+  <input id="query" placeholder="Enter customer query"/>
+  <button onclick="sendQuery()">Analyze</button>
+
+  <h3 id="result"></h3>
+
+  <script>
+    async function sendQuery() {
+      const text = document.getElementById("query").value;
+
+      const res = await fetch("http://127.0.0.1:8000/analyze", {
+        method: "POST",
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify({ text })
+      });
+
+      const data = await res.json();
+      document.getElementById("result").innerText = "Category: " + data.category;
+    }
+  </script>
+</body>
+</html>
