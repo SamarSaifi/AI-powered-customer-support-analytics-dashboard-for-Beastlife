@@ -11,7 +11,7 @@
 
   <h3 id="result"></h3>
 
-  <script>
+ <script>
   async function sendQuery() {
     const text = document.getElementById("query").value;
     document.getElementById("result").innerText = "Analyzing...";
@@ -19,15 +19,18 @@
     try {
       const res = await fetch("https://ai-powered-customer-support-analytics-nrxa.onrender.com/analyze", {
         method: "POST",
-        headers: {"Content-Type": "application/json"},
+        headers: {
+          "Content-Type": "application/json"
+        },
         body: JSON.stringify({ text })
       });
 
       const data = await res.json();
       document.getElementById("result").innerText = "Category: " + data.category;
 
-    } catch (err) {
-      document.getElementById("result").innerText = "Error connecting to server";
+    } catch (error) {
+      console.error(error);
+      document.getElementById("result").innerText = "Error connecting backend";
     }
   }
 </script>
