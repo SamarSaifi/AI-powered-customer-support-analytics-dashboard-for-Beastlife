@@ -12,10 +12,12 @@
   <h3 id="result"></h3>
 
   <script>
-    async function sendQuery() {
-      const text = document.getElementById("query").value;
+  async function sendQuery() {
+    const text = document.getElementById("query").value;
+    document.getElementById("result").innerText = "Analyzing...";
 
-      const res = await fetch("http://127.0.0.1:8000/analyze", {
+    try {
+      const res = await fetch("https://ai-powered-customer-support-analytics-nrxa.onrender.com/analyze", {
         method: "POST",
         headers: {"Content-Type": "application/json"},
         body: JSON.stringify({ text })
@@ -23,7 +25,12 @@
 
       const data = await res.json();
       document.getElementById("result").innerText = "Category: " + data.category;
+
+    } catch (err) {
+      document.getElementById("result").innerText = "Error connecting to server";
     }
-  </script>
+  }
+</script>
+  
 </body>
 </html>
