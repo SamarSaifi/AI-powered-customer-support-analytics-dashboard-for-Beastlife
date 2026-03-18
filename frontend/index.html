@@ -89,7 +89,7 @@
       resultBox.innerHTML = "Analyzing... ⏳";
 
       try {
-        const response = await fetch(`${API_BASE_URL}/api/queries`, {
+        const response = await fetch(`${API_BASE_URL}/api/analyze`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json"
