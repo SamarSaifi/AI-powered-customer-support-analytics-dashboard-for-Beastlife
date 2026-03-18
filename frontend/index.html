@@ -2,94 +2,105 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Beastlife AI Dashboard</title>
+  <title>Beastlife AI Query Analyzer</title>
 
   <style>
     body {
-      font-family: Arial, sans-serif;
-      background: #0f172a;
-      color: white;
+      font-family: Arial;
+      background: #f4f6f9;
+      padding: 40px;
       text-align: center;
-      padding: 50px;
     }
 
     h1 {
-      color: #38bdf8;
+      color: #333;
     }
 
-    input, select {
-      padding: 10px;
-      width: 300px;
-      margin: 10px;
-      border-radius: 5px;
-      border: none;
-    }
-
-    button {
-      padding: 10px 20px;
-      background: #38bdf8;
-      color: black;
-      border: none;
-      border-radius: 5px;
-      cursor: pointer;
-      font-weight: bold;
-    }
-
-    button:hover {
-      background: #0ea5e9;
-    }
-
-    #result {
-      margin-top: 30px;
-      background: #1e293b;
+    .container {
+      background: white;
       padding: 20px;
       border-radius: 10px;
       width: 400px;
-      margin-left: auto;
-      margin-right: auto;
+      margin: auto;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    }
+
+    select, textarea {
+      width: 100%;
+      padding: 10px;
+      margin-top: 10px;
+      border-radius: 5px;
+      border: 1px solid #ccc;
+    }
+
+    button {
+      margin-top: 15px;
+      padding: 10px;
+      width: 100%;
+      background: #007bff;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background: #0056b3;
+    }
+
+    #result {
+      margin-top: 20px;
       text-align: left;
+      background: #f1f1f1;
+      padding: 10px;
+      border-radius: 5px;
     }
   </style>
 </head>
 
 <body>
 
-  <h1>🤖 Beastlife AI Query Analyzer</h1>
+  <h1>🤖 AI Query Analyzer</h1>
 
-  <input id="query" placeholder="Enter customer query..." />
+  <div class="container">
 
-  <br/>
+    <label>Platform</label>
+    <select id="platformSelect">
+      <option>Website Chat</option>
+      <option>Instagram</option>
+      <option>WhatsApp</option>
+    </select>
 
-  <select id="platform">
-    <option>Website Chat</option>
-    <option>Instagram DMs</option>
-    <option>WhatsApp</option>
-    <option>Email</option>
-  </select>
+    <label>Customer Message</label>
+    <textarea id="messageInput" rows="4" placeholder="Type customer query..."></textarea>
 
-  <br/>
+    <button id="analyzeBtn">Analyze Query</button>
 
-  <button onclick="sendQuery()">Analyze Query</button>
+    <div id="result"></div>
 
-  <div id="result">Result will appear here...</div>
+  </div>
 
   <script>
     const API_BASE_URL = "https://ai-powered-customer-support-analytics-e7c1.onrender.com";
 
-    async function sendQuery() {
-      const message = document.getElementById("query").value.trim();
-      const platform = document.getElementById("platform").value;
-      const resultBox = document.getElementById("result");
+    const analyzeBtn = document.getElementById("analyzeBtn");
+    const messageInput = document.getElementById("messageInput");
+    const platformSelect = document.getElementById("platformSelect");
+    const resultBox = document.getElementById("result");
+
+    analyzeBtn.addEventListener("click", async () => {
+      const message = messageInput.value.trim();
+      const platform = platformSelect.value;
 
       if (!message) {
         alert("Please enter a message");
         return;
       }
 
-      resultBox.innerHTML = "Analyzing... ⏳";
+      resultBox.innerHTML = "⏳ Analyzing...";
 
       try {
-        const response = await fetch(`${API_BASE_URL}/api/analyze`, {
+        const response = await fetch(`${API_BASE_URL}/api/queries`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json"
@@ -117,14 +128,14 @@
           ${
             data.suggestedResponse
               ? `<p><strong>Suggested Reply:</strong> ${data.suggestedResponse}</p>`
-              : "<p><strong>Suggested Reply:</strong> Not available</p>"
+              : ""
           }
         `;
       } catch (error) {
         console.error(error);
         resultBox.innerHTML = "❌ Failed to analyze query. Please try again.";
       }
-    }
+    });
   </script>
 
 </body>
