@@ -6,7 +6,7 @@
     "dev": "concurrently \"vite\" \"node server.js\"",
     "build": "vite build",
     "preview": "vite preview",
-    "server": "node server.js"
+    "start": "node server.js"
   },
   "dependencies": {
     "@radix-ui/react-label": "^2.1.7",
