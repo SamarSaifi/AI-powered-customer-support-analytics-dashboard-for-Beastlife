@@ -1,6 +1,6 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 
-const API_BASE = "/api";
+const API_BASE = "https://ai-powered-customer-support-analytics-e7c1.onrender.com/api";
 
 async function apiFetch<T>(path: string): Promise<T> {
   const res = await fetch(`${API_BASE}${path}`);
@@ -105,18 +105,28 @@ export function useGetQueries() {
 
 export function useCreateQuery() {
   const queryClient = useQueryClient();
+
   return useMutation<Query, Error, { message: string; platform: string }>({
-    mutationFn: (body) =>
-      fetch(`${API_BASE}/queries`, {
+    mutationFn: async (body) => {
+      const r = await fetch(`${API_BASE}/queries`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(body),
-      }).then((r) => {
-        if (!r.ok) throw new Error("Failed to analyze query");
-        return r.json();
-      }),
+      });
+
+      if (!r.ok) {
+        throw new Error(`Failed to analyze query: ${r.status}`);
+      }
+
+      return r.json();
+    },
     onSuccess: () => {
-      queryClient.invalidateQueries();
+      queryClient.invalidateQueries({ queryKey: ["queries"] });
+      queryClient.invalidateQueries({ queryKey: ["kpis"] });
+      queryClient.invalidateQueries({ queryKey: ["distribution"] });
+      queryClient.invalidateQueries({ queryKey: ["platforms"] });
+      queryClient.invalidateQueries({ queryKey: ["automation"] });
+      queryClient.invalidateQueries({ queryKey: ["trends"] });
     },
   });
 }
