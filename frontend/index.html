@@ -1,39 +1,131 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <title>Beastlife Dashboard</title>
-</head>
-<body>
-  <h1>Customer Support AI</h1>
+  <meta charset="UTF-8" />
+  <title>Beastlife AI Dashboard</title>
 
-  <input id="query" placeholder="Enter customer query"/>
-  <button onclick="sendQuery()">Analyze</button>
-
-  <h3 id="result"></h3>
-
- <script>
-  async function sendQuery() {
-    const text = document.getElementById("query").value;
-    document.getElementById("result").innerText = "Analyzing...";
-
-    try {
-      const res = await fetch("https://ai-powered-customer-support-analytics-nrxa.onrender.com/analyze", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify({ text })
-      });
-
-      const data = await res.json();
-      document.getElementById("result").innerText = "Category: " + data.category;
-
-    } catch (error) {
-      console.error(error);
-      document.getElementById("result").innerText = "Error connecting backend";
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #0f172a;
+      color: white;
+      text-align: center;
+      padding: 50px;
     }
-  }
-</script>
-  
+
+    h1 {
+      color: #38bdf8;
+    }
+
+    input, select {
+      padding: 10px;
+      width: 300px;
+      margin: 10px;
+      border-radius: 5px;
+      border: none;
+    }
+
+    button {
+      padding: 10px 20px;
+      background: #38bdf8;
+      color: black;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      font-weight: bold;
+    }
+
+    button:hover {
+      background: #0ea5e9;
+    }
+
+    #result {
+      margin-top: 30px;
+      background: #1e293b;
+      padding: 20px;
+      border-radius: 10px;
+      width: 400px;
+      margin-left: auto;
+      margin-right: auto;
+      text-align: left;
+    }
+  </style>
+</head>
+
+<body>
+
+  <h1>🤖 Beastlife AI Query Analyzer</h1>
+
+  <input id="query" placeholder="Enter customer query..." />
+
+  <br/>
+
+  <select id="platform">
+    <option>Website Chat</option>
+    <option>Instagram DMs</option>
+    <option>WhatsApp</option>
+    <option>Email</option>
+  </select>
+
+  <br/>
+
+  <button onclick="sendQuery()">Analyze Query</button>
+
+  <div id="result">Result will appear here...</div>
+
+  <script>
+    const API_BASE_URL = "https://ai-powered-customer-support-analytics-e7c1.onrender.com";
+
+    async function sendQuery() {
+      const message = document.getElementById("query").value.trim();
+      const platform = document.getElementById("platform").value;
+      const resultBox = document.getElementById("result");
+
+      if (!message) {
+        alert("Please enter a message");
+        return;
+      }
+
+      resultBox.innerHTML = "Analyzing... ⏳";
+
+      try {
+        const response = await fetch(`${API_BASE_URL}/api/queries`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({
+            message: message,
+            platform: platform
+          })
+        });
+
+        if (!response.ok) {
+          throw new Error("Server error");
+        }
+
+        const data = await response.json();
+
+        resultBox.innerHTML = `
+          <h3>✅ Analysis Result</h3>
+          <p><strong>Message:</strong> ${data.message}</p>
+          <p><strong>Category:</strong> ${data.category}</p>
+          <p><strong>Confidence:</strong> ${data.confidence}%</p>
+          <p><strong>Status:</strong> ${data.status}</p>
+          <p><strong>Automatable:</strong> ${data.automatable ? "Yes" : "No"}</p>
+          <p><strong>Platform:</strong> ${data.platform}</p>
+          ${
+            data.suggestedResponse
+              ? `<p><strong>Suggested Reply:</strong> ${data.suggestedResponse}</p>`
+              : "<p><strong>Suggested Reply:</strong> Not available</p>"
+          }
+        `;
+      } catch (error) {
+        console.error(error);
+        resultBox.innerHTML = "❌ Failed to analyze query. Please try again.";
+      }
+    }
+  </script>
+
 </body>
 </html>
