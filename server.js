@@ -1,5 +1,5 @@
-const express = require("express");
-const cors = require("cors");
+import express from "express";
+import cors from "cors";
 
 const app = express();
 const PORT = process.env.PORT || 10000;
@@ -181,7 +181,6 @@ function classify(message) {
   };
 }
 
-// KPIs
 app.get("/api/analytics/kpis", (_req, res) => {
   const totalQueries = queriesDb.length;
   const resolvedToday = queriesDb.filter((q) => q.status === "Resolved").length;
@@ -202,7 +201,6 @@ app.get("/api/analytics/kpis", (_req, res) => {
   });
 });
 
-// Distribution
 app.get("/api/analytics/distribution", (_req, res) => {
   const counts = {};
   CATEGORIES.forEach((c) => {
@@ -224,7 +222,6 @@ app.get("/api/analytics/distribution", (_req, res) => {
   res.json(result);
 });
 
-// Trends
 app.get("/api/analytics/trends", (req, res) => {
   const period = req.query.period === "monthly" ? "monthly" : "weekly";
 
@@ -248,7 +245,6 @@ app.get("/api/analytics/trends", (req, res) => {
   res.json(data);
 });
 
-// Platforms
 app.get("/api/analytics/platforms", (_req, res) => {
   const counts = {};
   PLATFORMS.forEach((p) => {
@@ -267,7 +263,6 @@ app.get("/api/analytics/platforms", (_req, res) => {
   );
 });
 
-// Automation
 app.get("/api/analytics/automation", (_req, res) => {
   res.json([
     {
@@ -305,12 +300,10 @@ app.get("/api/analytics/automation", (_req, res) => {
   ]);
 });
 
-// Get all queries
 app.get("/api/queries", (_req, res) => {
   res.json([...queriesDb].reverse());
 });
 
-// Analyze / add query
 app.post("/api/queries", (req, res) => {
   const { message, platform } = req.body;
 
