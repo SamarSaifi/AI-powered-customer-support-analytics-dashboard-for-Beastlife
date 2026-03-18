@@ -3,19 +3,16 @@
 <head>
   <meta charset="UTF-8" />
   <title>Beastlife AI Query Analyzer</title>
-
   <style>
     body {
-      font-family: Arial;
+      font-family: Arial, sans-serif;
       background: #f4f6f9;
       padding: 40px;
       text-align: center;
     }
-
     h1 {
       color: #333;
     }
-
     .container {
       background: white;
       padding: 20px;
@@ -24,15 +21,14 @@
       margin: auto;
       box-shadow: 0 5px 15px rgba(0,0,0,0.1);
     }
-
     select, textarea {
       width: 100%;
       padding: 10px;
       margin-top: 10px;
       border-radius: 5px;
       border: 1px solid #ccc;
+      box-sizing: border-box;
     }
-
     button {
       margin-top: 15px;
       padding: 10px;
@@ -43,32 +39,29 @@
       border-radius: 5px;
       cursor: pointer;
     }
-
     button:hover {
       background: #0056b3;
     }
-
     #result {
       margin-top: 20px;
       text-align: left;
       background: #f1f1f1;
       padding: 10px;
       border-radius: 5px;
+      min-height: 60px;
     }
   </style>
 </head>
-
 <body>
-
   <h1>🤖 AI Query Analyzer</h1>
 
   <div class="container">
-
     <label>Platform</label>
     <select id="platformSelect">
       <option>Website Chat</option>
-      <option>Instagram</option>
+      <option>Instagram DMs</option>
       <option>WhatsApp</option>
+      <option>Email</option>
     </select>
 
     <label>Customer Message</label>
@@ -77,7 +70,6 @@
     <button id="analyzeBtn">Analyze Query</button>
 
     <div id="result"></div>
-
   </div>
 
   <script>
@@ -105,14 +97,11 @@
           headers: {
             "Content-Type": "application/json"
           },
-          body: JSON.stringify({
-            message: message,
-            platform: platform
-          })
+          body: JSON.stringify({ message, platform })
         });
 
         if (!response.ok) {
-          throw new Error("Server error");
+          throw new Error(`HTTP ${response.status}`);
         }
 
         const data = await response.json();
@@ -125,11 +114,7 @@
           <p><strong>Status:</strong> ${data.status}</p>
           <p><strong>Automatable:</strong> ${data.automatable ? "Yes" : "No"}</p>
           <p><strong>Platform:</strong> ${data.platform}</p>
-          ${
-            data.suggestedResponse
-              ? `<p><strong>Suggested Reply:</strong> ${data.suggestedResponse}</p>`
-              : ""
-          }
+          <p><strong>Suggested Reply:</strong> ${data.suggestedResponse || "Not available"}</p>
         `;
       } catch (error) {
         console.error(error);
@@ -137,6 +122,5 @@
       }
     });
   </script>
-
 </body>
 </html>
